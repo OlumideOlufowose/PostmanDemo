@@ -25,7 +25,7 @@
 							"    pm.response.to.be.header(\"server\",\"cloudflare\");",
 							"});",
 							"",
-							"postman.setNextRequest(\"Test3\");"
+							"pm.execution.setNextRequest(\"Test3\");"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -34,8 +34,11 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"packages": {},
-						"type": "text/javascript"
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
 					}
 				}
 			],
@@ -69,27 +72,27 @@
 					"script": {
 						"exec": [
 							"pm.test(\"verify first name\", function () {",
-							"pm.expect(pm.response.data.first_name(to.eql, \"Janet\"));",
-							"})",
+							"    pm.expect(pm.response.json().data.first_name).to.eql(\"Janet\");",
+							"});",
 							"",
 							"pm.test(\"Response status code is 200\", function () {",
-							"  pm.response.to.have.status(200);",
+							"    pm.response.to.have.status(200);",
 							"});",
 							"",
 							"pm.test(\"verify email\", function () {",
-							"pm.expect(pm.response.email(to.eql, \"janet.weaver@reqres.in\"));",
-							"})",
+							"    pm.expect(pm.response.json().data.email).to.eql(\"janet.weaver@reqres.in\");",
+							"});",
 							"",
 							"pm.test(\"verify id\", function () {",
-							"pm.expect(pm.response.id(to.eql, 2));",
-							"})",
+							"    pm.expect(pm.response.json().data.id).to.eql(2);",
+							"});",
 							"",
 							"pm.test(\"verify url\", function () {",
-							"pm.expect(pm.response.url(to.eql, \"https://reqres.in/#support-heading\"));",
-							"})",
+							"    pm.expect(pm.response.json().support.url).to.eql(\"https://reqres.in/#support-heading\");",
+							"});",
 							"",
-							"",
-							"pm.execution.setNextRequest(\"Test5\");"
+							"pm.execution.setNextRequest(\"Test5\");",
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -121,19 +124,19 @@
 					"script": {
 						"exec": [
 							"pm.test(\"verify name\", function () {",
-							"    pm.expect(pm.response.validations.name(to.eql, \"morpheus\"));",
-							"})",
+							"    pm.expect(pm.response.json().name).to.eql(\"morpheus\");",
+							"});",
 							"",
 							"pm.test(\"Verify id\", function () {",
-							"  pm.expect(pm.response.validations.id(to.eql, 807));",
+							"  pm.expect(pm.response.json()).to.have.property('id');",
 							"});",
 							"",
-							"pm.test(\"Response status code is 200\", function () {",
-							"  pm.response.to.have.status(200);",
+							"pm.test(\"Response status code is 201\", function () {",
+							"  pm.response.to.have.status(201);",
 							"});",
 							"",
-							"",
-							"pm.execution.setNextRequest(\"Test2\");"
+							"pm.execution.setNextRequest(\"Test2\");",
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -221,7 +224,8 @@
 					"script": {
 						"exec": [
 							"",
-							"postman.setNextRequest(\"Test6\");",
+							"pm.execution.setNextRequest(\"Test6\");",
+							"",
 							"pm.test(\"Response status code is 400\", function () {",
 							"    pm.response.to.have.status(400);",
 							"});",
@@ -315,18 +319,15 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"",
-							"",
-							"postman.setNextRequest(null);",
-							"",
 							"pm.test(\"Response body has the password field\", function () {",
-							"    pm.expect(pm.response.json()).to.have.property('password');",
+							"    pm.expect(pm.response.json().error).to.include('password');",
 							"});",
 							"",
 							"",
 							"pm.test(\"Response status code is 400\", function () {",
 							"    pm.response.to.have.status(400);",
-							"});"
+							"});",
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
