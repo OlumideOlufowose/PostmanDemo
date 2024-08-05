@@ -1,0 +1,332 @@
+{
+	"info": {
+		"_postman_id": "39227773-ec9b-479c-bdd9-ffc6e34b0c54",
+		"name": "Day2 (https://reqres.in/)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31762524",
+		"_collection_link": "https://bold-rocket-392086.postman.co/workspace/Ruby%2522s-Workspace~30f07bea-0b33-4447-bfb2-ee77a74dd25a/collection/31762524-39227773-ec9b-479c-bdd9-ffc6e34b0c54?action=share&source=collection_link&creator=31762524"
+	},
+	"item": [
+		{
+			"name": "Test1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed the failing test for response time",
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response body contains data\", function () {",
+							"  pm.expect(pm.response.text()).to.include(\"data\");",
+							"});",
+							"pm.test(\"validate Content - Type\", function() {",
+							"    pm.response.to.be.header(\"server\",\"cloudflare\");",
+							"});",
+							"",
+							"tests[\"Response status code is 200\"] = responseCode.code == 200;",
+							"tests[\"Response body conatain string data\"] = responseBody.has(\"email\");",
+							"",
+							"postman.setNextRequest(\"Test3\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{test}}/api/users?page=2",
+					"host": [
+						"{{test}}"
+					],
+					"path": [
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"tests[\"verify first name\"] = response.data.first_name = \"Janet\";",
+							"tests[\"verify email\"] = response.email = \"janet.weaver@reqres.in\";",
+							"tests['verify id'] = response.id = 2;",
+							"tests['verify url'] = response.url = \"https://reqres.in/#support-heading\";",
+							"",
+							"postman.setNextRequest(\"Test5\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{test}}/api/users/2",
+					"host": [
+						"{{test}}"
+					],
+					"path": [
+						"api",
+						"users",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var validations = JSON.parse(responseBody);",
+							"tests[\"verify name \"] = validations.name = \"morpheus\";",
+							"tests[\"verify id\"] = validations.id = \"807\";",
+							"tests[\"verify status is 201\"] = responseCode.code == 201;",
+							"",
+							"postman.setNextRequest(\"Test2\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"morpheus\",\n    \"job\": \"leader\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{test}}/api/users{",
+					"host": [
+						"{{test}}"
+					],
+					"path": [
+						"api",
+						"users{"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"validate token presence\"] = responseBody.has(\"token\")",
+							"tests[\"valaidate status code is 200\"] = responseCode.code == 200;",
+							"",
+							"postman.setNextRequest(\"Test7\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"eve.holt@reqres.in\",\n    \"password\": \"cityslicka\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{test}}/api/login",
+					"host": [
+						"{{test}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"valaidate status code is 400\"] = responseCode.code == 400;",
+							"tests[\"validate error\"] = responseBody.has(\"user not found\");",
+							"",
+							"postman.setNextRequest(\"Test6\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"eve.lott@reqres.in\",\n    \"password\": \"stateslicka\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{test}}/api/login",
+					"host": [
+						"{{test}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test6",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"valaidate status code is 400\"] = responseCode.code == 400;",
+							"tests[\"validate error\"] = responseBody.has(\"Missing password\");",
+							"",
+							"postman.setNextRequest(\"Test4\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"eve.lott@reqres.in\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{test}}/api/login",
+					"host": [
+						"{{test}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Test7",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"tests[\"valaidate status code is 400\"] = responseCode.code == 400;",
+							"tests[\"validate error\"] = responseBody.has(\"Missing password\");",
+							"",
+							"postman.setNextRequest(null);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"eve.lott@reqres.in\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{test}}/api/login",
+					"host": [
+						"{{test}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"//postman.setGlobalVariable(\"url\", \"https://reqres.in\")"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
