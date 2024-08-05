@@ -25,13 +25,17 @@
 							"    pm.response.to.be.header(\"server\",\"cloudflare\");",
 							"});",
 							"",
-							"tests[\"Response status code is 200\"] = responseCode.code == 200;",
-							"tests[\"Response body conatain string data\"] = responseBody.has(\"email\");",
-							"",
 							"postman.setNextRequest(\"Test3\");"
 						],
 						"type": "text/javascript",
 						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
 					}
 				}
 			],
@@ -64,13 +68,28 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var response = JSON.parse(responseBody);",
-							"tests[\"verify first name\"] = response.data.first_name = \"Janet\";",
-							"tests[\"verify email\"] = response.email = \"janet.weaver@reqres.in\";",
-							"tests['verify id'] = response.id = 2;",
-							"tests['verify url'] = response.url = \"https://reqres.in/#support-heading\";",
+							"pm.test(\"verify first name\", function () {",
+							"pm.expect(pm.response.data.first_name(to.eql, \"Janet\"));",
+							"})",
 							"",
-							"postman.setNextRequest(\"Test5\");"
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"verify email\", function () {",
+							"pm.expect(pm.response.email(to.eql, \"janet.weaver@reqres.in\"));",
+							"})",
+							"",
+							"pm.test(\"verify id\", function () {",
+							"pm.expect(pm.response.id(to.eql, 2));",
+							"})",
+							"",
+							"pm.test(\"verify url\", function () {",
+							"pm.expect(pm.response.url(to.eql, \"https://reqres.in/#support-heading\"));",
+							"})",
+							"",
+							"",
+							"pm.execution.setNextRequest(\"Test5\");"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -101,12 +120,20 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var validations = JSON.parse(responseBody);",
-							"tests[\"verify name \"] = validations.name = \"morpheus\";",
-							"tests[\"verify id\"] = validations.id = \"807\";",
-							"tests[\"verify status is 201\"] = responseCode.code == 201;",
+							"pm.test(\"verify name\", function () {",
+							"    pm.expect(pm.response.validations.name(to.eql, \"morpheus\"));",
+							"})",
 							"",
-							"postman.setNextRequest(\"Test2\");"
+							"pm.test(\"Verify id\", function () {",
+							"  pm.expect(pm.response.validations.id(to.eql, 807));",
+							"});",
+							"",
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.execution.setNextRequest(\"Test2\");"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -145,10 +172,16 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"tests[\"validate token presence\"] = responseBody.has(\"token\")",
-							"tests[\"valaidate status code is 200\"] = responseCode.code == 200;",
 							"",
-							"postman.setNextRequest(\"Test7\");"
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Validate token presence in the response body\", function () {",
+							"  pm.expect(pm.response.json()).to.have.property('token');",
+							"});",
+							"",
+							"pm.execution.setNextRequest(\"Test7\");"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -187,10 +220,15 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"tests[\"valaidate status code is 400\"] = responseCode.code == 400;",
-							"tests[\"validate error\"] = responseBody.has(\"user not found\");",
 							"",
-							"postman.setNextRequest(\"Test6\");"
+							"postman.setNextRequest(\"Test6\");",
+							"pm.test(\"Response status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"// Test to validate the error in the response body",
+							"pm.test(\"Response body contains the error message 'user not found'\", function () {",
+							"    pm.expect(pm.response.json()).to.have.property('error', 'user not found');",
+							"});"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -229,10 +267,16 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"tests[\"valaidate status code is 400\"] = responseCode.code == 400;",
-							"tests[\"validate error\"] = responseBody.has(\"Missing password\");",
 							"",
-							"postman.setNextRequest(\"Test4\");"
+							"",
+							"postman.setNextRequest(\"Test4\");",
+							"pm.test(\"Response status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"// Test to check for the presence of the 'Missing password' message in the response body",
+							"pm.test(\"Response body contains the 'Missing password' message\", function () {",
+							"    pm.expect(pm.response.text()).to.include('Missing password');",
+							"});"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -271,10 +315,18 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"tests[\"valaidate status code is 400\"] = responseCode.code == 400;",
-							"tests[\"validate error\"] = responseBody.has(\"Missing password\");",
 							"",
-							"postman.setNextRequest(null);"
+							"",
+							"postman.setNextRequest(null);",
+							"",
+							"pm.test(\"Response body has the password field\", function () {",
+							"    pm.expect(pm.response.json()).to.have.property('password');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});"
 						],
 						"type": "text/javascript",
 						"packages": {}
